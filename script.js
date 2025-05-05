@@ -1,36 +1,66 @@
-let [minutes, seconds] = [25, 0];
-let timerRef = document.querySelector(".timer");
-let int = null;
+let currentTab = "classic";
+let timers = {
+    classic: { minutes: 25, seconds: 0, interval: null },
+    break: { minutes: 5, seconds: 0, interval: null }
+};
 
-document.getElementById("start").addEventListener("click", () => {
-    if (int === null) {
-        int = setInterval(displayTimer, 1000);
-    }
-});
+function updateDisplay() {
+    const timer = timers[currentTab];
+    const timerEl = document.getElementById(`${currentTab}-timer`);
+    timerEl.innerHTML = `${timer.minutes.toString().padStart(2, '0')}:${timer.seconds.toString().padStart(2, '0')}`;
+}
 
-document.getElementById("stop").addEventListener("click", () => {
-    clearInterval(int);
-    int = null;
-});
-
-document.getElementById("reset").addEventListener("click", () => {
-    clearInterval(int);
-    int = null;
-    [minutes, seconds] = [25, 0];
-    timerRef.innerHTML = "25:00";
-});
-
-function displayTimer() {
-    if (seconds === 0) {
-        if (minutes === 0) {
-            clearInterval(int);
-            int = null;
+function displayTimer(tab) {
+    const timer = timers[tab];
+    if (timer.seconds === 0) {
+        if (timer.minutes === 0) {
+            clearInterval(timer.interval);
+            timer.interval = null;
             return;
         }
-        minutes--;
-        seconds = 59;
+        timer.minutes--;
+        timer.seconds = 59;
     } else {
-        seconds--;
+        timer.seconds--;
     }
-    timerRef.innerHTML = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    if (tab === currentTab) updateDisplay();
 }
+
+// Tab switching
+document.querySelectorAll(".tab-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+        document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+
+        document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+        document.getElementById(btn.dataset.tab).classList.add("active");
+
+        currentTab = btn.dataset.tab;
+        updateDisplay();
+    });
+});
+
+// Button actions
+["classic", "break"].forEach(tab => {
+    document.getElementById(`${tab}-start`).addEventListener("click", () => {
+        const timer = timers[tab];
+        if (timer.interval === null) {
+            timer.interval = setInterval(() => displayTimer(tab), 1000);
+        }
+    });
+
+    document.getElementById(`${tab}-stop`).addEventListener("click", () => {
+        const timer = timers[tab];
+        clearInterval(timer.interval);
+        timer.interval = null;
+    });
+
+    document.getElementById(`${tab}-reset`).addEventListener("click", () => {
+        const timer = timers[tab];
+        clearInterval(timer.interval);
+        timer.interval = null;
+        timer.minutes = tab === "classic" ? 25 : 5;
+        timer.seconds = 0;
+        if (tab === currentTab) updateDisplay();
+    });
+});

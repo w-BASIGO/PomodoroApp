@@ -7,19 +7,35 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <div class="text">
-            Focus
-        </div>
-        <div class="timer">
-            25:00
-        </div>
-        <div class="buttons">
-            <button id="start">Start</button>
-            <button id="stop">Stop</button>
-            <button id="reset">Reset</button>
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="classic">Classic Timer</button>
+        <button class="tab-btn" data-tab="break">Break</button>
+    </div>
+
+    <div class="tab-content active" id="classic">
+        <div class="container">
+            <div class="text">Focus</div>
+            <div class="timer" id="classic-timer">25:00</div>
+            <div class="buttons">
+                <button id="classic-start">Start</button>
+                <button id="classic-stop">Stop</button>
+                <button id="classic-reset">Reset</button>
+            </div>
         </div>
     </div>
+
+    <div class="tab-content" id="break">
+        <div class="container">
+            <div class="text">Take a Break</div>
+            <div class="timer" id="break-timer">05:00</div>
+            <div class="buttons">
+                <button id="break-start">Start</button>
+                <button id="break-stop">Stop</button>
+                <button id="break-reset">Reset</button>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>
